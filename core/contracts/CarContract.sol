@@ -22,7 +22,7 @@ contract CarContract is ERC721, Ownable {
     string state; // Presale, In sale, Sold
   }
 
-  event CarStateChanged(string value);
+  event CarStateChanged(uint256 carId, string value);
   event CarCreated(Car newCar);
 
   constructor(
@@ -49,13 +49,13 @@ contract CarContract is ERC721, Ownable {
     cars[carId].price = price;
     cars[carId].kilometers = kilometers;
     cars[carId].state = "In sale";
-    emit CarStateChanged("In sale");
+    emit CarStateChanged(carId, "In sale");
   }
 
   function sellCar(uint256 carId, address newOwner) public {
     require(cars[carId].owner == msg.sender, "You are not the owner of this car");
     cars[carId].state = "Sold";
-    emit CarStateChanged("Sold");
+    emit CarStateChanged(carId ,"Sold");
     cars[carId].owner = newOwner;
   }
 }
