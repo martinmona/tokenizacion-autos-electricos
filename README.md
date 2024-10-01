@@ -1,2 +1,2 @@
-# diplomatura-blockchain-UTN-Grupo8
-Repositorio que contiene el TP integrador sobre tokenización de autos eléctricos.
+# tokenizacion-autos-electricos
+Proyecto de tokenización de vehículos eléctricos para la Diplomatura en Blockchain (UTN).
