@@ -18,7 +18,8 @@ contract CarContract is ERC721, Ownable {
     uint16 year;
     uint16 price;
     uint64 kilometers;
-    string state; // Fabricando, Disponible, Vendido
+    address owner;
+    string state; // Presale, In sale, Sold
   }
 
   constructor(
@@ -26,16 +27,29 @@ contract CarContract is ERC721, Ownable {
       string memory _symbol
   ) ERC721(_name, _symbol) Ownable(msg.sender) {}
 
-  function createCar(string memory brand, string memory model, uint16 year, uint16 price, address to) public onlyOwner returns (uint256) {
-    Car memory car = Car(brand, model, year, price, 0, "Fabricando");
+  function createCar(string memory brand, string memory model, uint16 year, uint16 price) public onlyOwner returns (uint256) {
+    Car memory car = Car(brand, model, year, price, 0, msg.sender, "Presale");
     uint256 carId = _tokenIdCounter;
     _tokenIdCounter++;
     cars[carId] = car;
-    _safeMint(to, carId);
+    _safeMint(msg.sender, carId);
     return carId;
   }
 
   function getCar(uint256 carId) public view returns (Car memory) {
     return cars[carId];
+  }
+
+  function putCarOnSale(uint256 carId, uint16 price, uint64 kilometers) public {
+    require(cars[carId].owner == msg.sender, "You are not the owner of this car");
+    cars[carId].price = price;
+    cars[carId].kilometers = kilometers;
+    cars[carId].state = "In sale";
+  }
+
+  function sellCar(uint256 carId, address newOwner) public {
+    require(cars[carId].owner == msg.sender, "You are not the owner of this car");
+    cars[carId].state = "Sold";
+    cars[carId].owner = newOwner;
   }
 }
