@@ -22,6 +22,9 @@ contract CarContract is ERC721, Ownable {
     string state; // Presale, In sale, Sold
   }
 
+  event CarStateChanged(string value);
+  event CarCreated(Car newCar);
+
   constructor(
       string memory _name,
       string memory _symbol
@@ -33,6 +36,7 @@ contract CarContract is ERC721, Ownable {
     _tokenIdCounter++;
     cars[carId] = car;
     _safeMint(msg.sender, carId);
+    emit CarCreated(car);
     return carId;
   }
 
@@ -45,11 +49,13 @@ contract CarContract is ERC721, Ownable {
     cars[carId].price = price;
     cars[carId].kilometers = kilometers;
     cars[carId].state = "In sale";
+    emit CarStateChanged("In sale");
   }
 
   function sellCar(uint256 carId, address newOwner) public {
     require(cars[carId].owner == msg.sender, "You are not the owner of this car");
     cars[carId].state = "Sold";
+    emit CarStateChanged("Sold");
     cars[carId].owner = newOwner;
   }
 }
