@@ -9,7 +9,14 @@
   "author": "",
   "license": "ISC",
   "description": "tokenizacion-autos-electricos-contracts",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.7",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "ethers": "^6.13.2",
+    "hardhat": "^2.22.9"
+  },
   "dependencies": {
-    "@openzeppelin/contracts": "^5.0.2"
+    "@openzeppelin/contracts": "^5.0.2",
+    "dotenv": "^16.4.5"
   }
 }
