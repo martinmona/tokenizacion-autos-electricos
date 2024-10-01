@@ -1,0 +1,15 @@
+{
+  "name": "tokenizacion-autos-electricos-frontend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "tokenizacion-autos-electricos-contracts",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
