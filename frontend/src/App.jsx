@@ -1,7 +1,5 @@
 // src/App.jsx
 import { useState } from 'react';
-import { ethers } from 'ethers';
-import CarContract from './contracts/CarContract';
 import ConnectWallet from './components/ConnectWallet';
 import CreateCarForm from './components/CreateCarForm';
 

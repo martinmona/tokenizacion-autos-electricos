@@ -1,6 +1,6 @@
 import React from 'react';
 import { ethers } from 'ethers';
-import CarContract from '../../contracts/CarContract';
+import CarContract from '../../../contracts/CarContract.json';
 async function createCar() {
   if (typeof window.ethereum == 'undefined') {
     throw new Error("Metamask not found");
@@ -18,11 +18,11 @@ async function createCar() {
   const carAbi = CarContract.abi;
   const carContract = new ethers.Contract(carContractAddress, carAbi, signer);
   console.log(carContract);
-  const gasEstimate = await carContract.estimateGas.createCar(brand, model, year, price);
-  console.log(`Estimación de gas: ${gasEstimate.toString()}`);
+  //const gasEstimate = await carContract.createCar.estimateGas(brand, model, year, price);
+  //console.log(`Estimación de gas: ${gasEstimate.toString()}`);
 
   const tx = await carContract.createCar(brand, model, year, price, {
-    gasLimit: gasEstimate,
+    gasLimit: ethers.toBigInt("1000000"),
   });
   const receipt = await tx.wait();
   console.log('Transacción confirmada:', receipt);
