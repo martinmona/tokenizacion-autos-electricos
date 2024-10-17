@@ -4,7 +4,8 @@ import {
 } from "@nomicfoundation/hardhat-toolbox/network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 import { expect } from "chai";
-import hre from "hardhat";
+import hre, {ethers} from "hardhat";
+import { CarContract } from "../typechain-types";
 
 describe("Lock", function () {
   // We define a fixture to reuse the same setup in every test.
@@ -123,5 +124,26 @@ describe("Lock", function () {
         );
       });
     });
+  });
+  describe("CarContract", function () {
+    let carContract: CarContract;
+    let owner: any;
+    let buyer: any;
+  
+    beforeEach(async function () {
+      [owner, buyer] = await ethers.getSigners();
+      const CarContract = await ethers.getContractFactory("CarContract");
+      carContract = await CarContract.deploy("Car", "CAR");
+      await carContract.waitForDeployment();
+    });
+  
+    it("should create a new car", async function () {
+      await carContract.createCar("Tesla", "Model 3", 2023, 50000);
+      const car = await carContract.getCar(0);
+      expect(car.brand).to.equal('Tesla');
+      expect(car.state).to.equal('Presale');
+    });
+  
+    // ... otros casos de prueba
   });
 });

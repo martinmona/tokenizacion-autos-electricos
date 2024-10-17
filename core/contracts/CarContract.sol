@@ -33,10 +33,10 @@ contract CarContract is ERC721, Ownable {
   function createCar(string memory brand, string memory model, uint16 year, uint16 price) public onlyOwner returns (uint256) {
     Car memory car = Car(brand, model, year, price, 0, msg.sender, "Presale");
     uint256 carId = _tokenIdCounter;
-    _tokenIdCounter++;
     cars[carId] = car;
     _safeMint(msg.sender, carId);
     emit CarCreated(car);
+    _tokenIdCounter++;
     return carId;
   }
 
