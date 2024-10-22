@@ -1,14 +1,10 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import CarContract from '../../../contracts/CarContract.json';
-async function createCar() {
+async function createCar(brand, model, year, price) {
   if (typeof window.ethereum == 'undefined') {
     throw new Error("Metamask not found");
   }
-  const brand = 'Toyota';
-  const model = 'Camry';
-  const year = 2023;
-  const price = 25000;
   const provider = new ethers.BrowserProvider(window.ethereum);
   const signer = await provider.getSigner();
   const carContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || '';
@@ -20,11 +16,7 @@ async function createCar() {
   console.log(`Los parametros son brand: ${brand}, model: ${model}, year: ${year}, price: ${price}`);
   const gasEstimate = await carContract.createCar.estimateGas(brand, model, year, price);
   console.log(`Estimación de gas: ${gasEstimate.toString()}`);
-  const tx = await carContract.createCar(brand, model, year, price,
-    {
-      gasLimit: gasEstimate
-    }
-  );
+  const tx = await carContract.createCar(brand, model, year, price);
   const receipt = await tx.wait();
   console.log('Transacción confirmada:', receipt);
   console.log('Car created successfully!');
