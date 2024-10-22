@@ -20,7 +20,11 @@ async function createCar() {
   console.log(`Los parametros son brand: ${brand}, model: ${model}, year: ${year}, price: ${price}`);
   const gasEstimate = await carContract.createCar.estimateGas(brand, model, year, price);
   console.log(`Estimación de gas: ${gasEstimate.toString()}`);
-  const tx = await carContract.createCar(brand, model, year, price);
+  const tx = await carContract.createCar(brand, model, year, price,
+    {
+      gasLimit: gasEstimate
+    }
+  );
   const receipt = await tx.wait();
   console.log('Transacción confirmada:', receipt);
   console.log('Car created successfully!');
