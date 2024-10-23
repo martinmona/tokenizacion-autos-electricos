@@ -6,8 +6,8 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract CarContract is ERC721, Ownable {
-  uint16 public immutable MAX_SUPPLY;
-  uint16 internal _numAvailableRemainingTokens;
+  uint256 public immutable MAX_SUPPLY;
+  uint256 internal _numAvailableRemainingTokens;
   mapping(uint256 => Car) public cars;
   uint256 internal _tokenIdCounter = 0;
 
@@ -15,9 +15,9 @@ contract CarContract is ERC721, Ownable {
   struct Car {
     string brand;
     string model;
-    uint16 year;
-    uint16 price;
-    uint64 kilometers;
+    uint256 year;
+    uint256 price;
+    uint256 kilometers;
     address owner;
     string state; // Presale, In sale, Sold
   }
@@ -30,7 +30,7 @@ contract CarContract is ERC721, Ownable {
       string memory _symbol
   ) ERC721(_name, _symbol) Ownable(msg.sender) {}
 
-  function createCar(string memory brand, string memory model, uint16 year, uint16 price) public onlyOwner returns (uint256) {
+  function createCar(string memory brand, string memory model, uint256 year, uint256 price) public onlyOwner returns (uint256) {
     Car memory car = Car(brand, model, year, price, 0, msg.sender, "Presale");
     uint256 carId = _tokenIdCounter;
     cars[carId] = car;
@@ -44,7 +44,7 @@ contract CarContract is ERC721, Ownable {
     return cars[carId];
   }
 
-  function putCarOnSale(uint256 carId, uint16 price, uint64 kilometers) public {
+  function putCarOnSale(uint256 carId, uint256 price, uint256 kilometers) public {
     require(cars[carId].owner == msg.sender, "You are not the owner of this car");
     cars[carId].price = price;
     cars[carId].kilometers = kilometers;
