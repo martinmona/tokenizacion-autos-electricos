@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
-import CarContract from '../../../contracts/CarContract.json';
+import CarContract from '../../contracts/CarContract.json';
+import { Button, Space, Typography, Form, Input } from 'antd';
+
 async function createCar(brand, model, year, price) {
   if (typeof window.ethereum == 'undefined') {
     throw new Error("Metamask not found");
@@ -26,34 +28,37 @@ const CreateCarForm = () => {
   const [newCarBrand, setNewCarBrand] = useState('');
   const [newCarModel, setNewCarModel] = useState('');
   const [newCarYear, setNewCarYear] = useState(0);
-  const [newCarPrice, setNewCaPriced] = useState(0);
+  const [newCarPrice, setNewCaPriced] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const handleFormSubmit = async (e) => {
+    setIsLoading(true);
     await createCar(newCarBrand, newCarModel, newCarYear, newCarPrice);
+    setIsLoading(false);
     e.preventDefault();
   }
   return (
-    <div className="create-car-form">
-      <h2>Create Car</h2>
-      <form>
-        <div className="form-group">
+    <Space direction="vertical">
+      <Typography  >Create Car</Typography>
+      <Form>
+        <div className="form-group" display="flex" alignItems="center">
           <label htmlFor="brand">Brand:</label>
-          <input type="text" id="brand" name="brand" onChange={e => setNewCarBrand(e.target.value)} />
+          <Input type="text" id="brand" name="brand" value={newCarBrand} onChange={e => setNewCarBrand(e.target.value)} required/>
         </div>
         <div className="form-group">
           <label htmlFor="model">Model:</label>
-          <input type="text" id="model" name="model" onChange={e => setNewCarModel(e.target.value)} />
+          <Input type="text" id="model" name="model" value={newCarModel} onChange={e => setNewCarModel(e.target.value)} required/>
         </div>
         <div className="form-group">
           <label htmlFor="year">Year:</label>
-          <input type="number" id="year" name="year" onChange={e => setNewCarYear(parseInt(e.target.value))}/>
+          <Input type="number" id="year" name="year" value={newCarYear} onChange={e => setNewCarYear(parseInt(e.target.value))} required/>
         </div>
         <div className="form-group">
           <label htmlFor="price">Price:</label>
-          <input type="number" id="price" name="price" onChange={e => setNewCaPriced(parseInt(e.target.value))}/>
+          <Input type="number" id="price" name="price" value={newCarPrice} onChange={e => setNewCaPriced(parseInt(e.target.value))} required/>
         </div>
-        <button type="button" onClick={handleFormSubmit}>Create Car</button>
-      </form>
-    </div>
+        <Button type="primary" loading={isLoading} primary onClick={handleFormSubmit}>Create Car</Button>
+      </Form>
+    </Space>
   );
 };
 

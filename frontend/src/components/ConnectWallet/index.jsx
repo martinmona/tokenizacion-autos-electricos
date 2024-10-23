@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import { ethers } from 'ethers';
 
 const connectWallet = async (setAccount) => {
@@ -19,7 +20,7 @@ const ConnectWallet = ({setAccount}) => {
 
   return <>
     <h1>Conecta tu Wallet</h1>
-    <button onClick={() => connectWallet(setAccount)}>Conectar Wallet</button>
+    <Button onClick={() => connectWallet(setAccount)}>Conectar Wallet</Button>
   </>
 }
 
