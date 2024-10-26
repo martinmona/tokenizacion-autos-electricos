@@ -1,69 +1,95 @@
-import React, { useState } from 'react';
-import { ethers } from 'ethers';
-import CarContract from '../../contracts/CarContract.json';
-import { Button, Space, Typography, Form, Input } from 'antd';
+import React, { useState } from "react";
+import { ethers } from "ethers";
+import CarContract from "../../contracts/CarContract.json";
+import { Button, Space, message, Form, Input, InputNumber } from "antd";
+import getCarContract from "../../utils/getCarContract";
 
 const CreateCarForm = () => {
-  const [newCarBrand, setNewCarBrand] = useState('');
-  const [newCarModel, setNewCarModel] = useState('');
-  const [newCarYear, setNewCarYear] = useState(2024);
-  const [newCarPrice, setNewCaPriced] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
 
   async function createCar(brand, model, year, price) {
     setIsLoading(true);
     try {
-      if (typeof window.ethereum == 'undefined') {
-        throw new Error("Metamask not found");
-      }
-      const provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await provider.getSigner();
-      const carContractAddress = import.meta.env.VITE_CONTRACT_ADDRESS || '';
-      await window.ethereum.request({ method: 'eth_requestAccounts' });
-      console.log(`carContractAddress: ${carContractAddress}`);
-      const carAbi = CarContract.abi;
-      const carContract = new ethers.Contract(carContractAddress, carAbi, signer);
-      console.log(carContract);
-      console.log(`Los parametros son brand: ${brand}, model: ${model}, year: ${year}, price: ${price}`);
-      const gasEstimate = await carContract.createCar.estimateGas(brand, model, year, price);
+      const carContract = await getCarContract();
+      console.log(
+        `Los parametros son brand: ${brand}, model: ${model}, year: ${year}, price: ${price}`
+      );
+      const gasEstimate = await carContract.createCar.estimateGas(
+        brand,
+        model,
+        year,
+        price
+      );
       console.log(`Estimación de gas: ${gasEstimate.toString()}`);
       const tx = await carContract.createCar(brand, model, year, price);
       const receipt = await tx.wait();
-      console.log('Transacción confirmada:', receipt);
-      console.log('Car created successfully!');
+      console.log("Auto creado correctamente:", receipt);
+      messageApi.success("Auto creado correctamente");
     } catch (error) {
-      console.error('Error creating car:', error);
+      console.error("Error al querer crear el auto:", error);
+      messageApi.error("No se pudo crear el auto");
     } finally {
       setIsLoading(false);
     }
   }
-  
-  const handleFormSubmit = async () => {
-    await createCar(newCarBrand, newCarModel, newCarYear, newCarPrice);
-  }
+
+  const handleFormSubmit = async (values) => {
+    const { brand, model, year, price } = values;
+    await createCar(brand, model, year, price);
+  };
   return (
-    <Space direction="vertical">
-      <Typography  >Create Car</Typography>
-      <Form onFinish={handleFormSubmit}>
-        <div className="form-group" display="flex" alignItems="center">
-          <label htmlFor="brand">Brand:</label>
-          <Input type="text" id="brand" name="brand" value={newCarBrand} onChange={e => setNewCarBrand(e.target.value)} required/>
-        </div>
-        <div className="form-group">
-          <label htmlFor="model">Model:</label>
-          <Input type="text" id="model" name="model" value={newCarModel} onChange={e => setNewCarModel(e.target.value)} required/>
-        </div>
-        <div className="form-group">
-          <label htmlFor="year">Year:</label>
-          <Input type="number" id="year" name="year" value={newCarYear} onChange={e => setNewCarYear(parseInt(e.target.value))} required/>
-        </div>
-        <div className="form-group">
-          <label htmlFor="price">Price:</label>
-          <Input type="number" id="price" name="price" value={newCarPrice} onChange={e => setNewCaPriced(parseInt(e.target.value))} required/>
-        </div>
-        <Button type="primary" htmlType="submit" loading={isLoading} primary >Create Car</Button>
-      </Form>
-    </Space>
+    <>
+      {contextHolder}
+      <Space direction="vertical">
+        <Form
+          name="CreateCar"
+          labelCol={{
+            span: 8,
+          }}
+          wrapperCol={{
+            span: 16,
+          }}
+          style={{
+            maxWidth: 600,
+          }}
+          initialValues={{
+            remember: true,
+            year: 2024,
+            price: 0,
+          }}
+          onFinish={handleFormSubmit}
+        >
+          <Form.Item label="Marca" name="brand">
+            <Input type="text" id="brand" required />
+          </Form.Item>
+          <Form.Item label="Modelo" name="model">
+            <Input type="text" id="model" required />
+          </Form.Item>
+          <Form.Item label="Año" name="year">
+            <InputNumber
+              style={{
+                width: "100%",
+              }}
+              id="year"
+              required
+            />
+          </Form.Item>
+          <Form.Item label="Precio" name="price">
+            <InputNumber
+              style={{
+                width: "100%",
+              }}
+              id="price"
+              required
+            />
+          </Form.Item>
+          <Button type="primary" htmlType="submit" loading={isLoading}>
+            Crear Auto
+          </Button>
+        </Form>
+      </Space>
+    </>
   );
 };
 
