@@ -87,7 +87,7 @@ contract CarContract is ERC721, Ownable {
             "You are not the owner of this car"
         );
         require(cars[carId].state == CarState.Presale, "Car is already on sale");
-        require(cars[carId].kilometers >= kilometers, "The car can't have less kilometers");
+        require(cars[carId].kilometers <= kilometers, "The car can't have less kilometers");
         cars[carId].price = price;
         cars[carId].kilometers = kilometers;
         cars[carId].state = CarState.InSale;
